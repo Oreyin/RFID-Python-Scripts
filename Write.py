@@ -45,7 +45,7 @@ text = raw_input('Enter Part number: ')
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
-    print("In the while loop")
+
     # Scan for cards    
     (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
@@ -58,7 +58,7 @@ while continue_reading:
 
     # If we have the UID, continue
     if status == MIFAREReader.MI_OK:
-
+        
         # Print UID
         print "Card read UID: %s,%s,%s,%s" % (uid[0], uid[1], uid[2], uid[3])
     
@@ -101,7 +101,7 @@ while continue_reading:
             text = text.rstrip('\x00')
             print "cardinfo = ", text
             print "\n"
-
+            
             # Stop
             MIFAREReader.MFRC522_StopCrypto1()
 
