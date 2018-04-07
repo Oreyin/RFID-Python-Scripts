@@ -58,18 +58,15 @@ while continue_reading:
 
     # If we have the UID, continue
     if status == MIFAREReader.MI_OK:
-<<<<<<< HEAD
         
         # Print UID
         print "Card read UID: %s,%s,%s,%s" % (uid[0], uid[1], uid[2], uid[3])
     
         # This is the default key for authentication
         key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
-=======
-        try:
+
             # Print UID
             print "Card read UID: %s,%s,%s,%s" % (uid[0], uid[1], uid[2], uid[3])
->>>>>>> 40a69d2bde9d72942b8ca515b5a18f73d3a83f37
         
             # This is the default key for authentication
             key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
@@ -80,9 +77,6 @@ while continue_reading:
             # Authenticate
             status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
             print "\n"
-<<<<<<< HEAD
-            
-=======
 
             # Check if authenticated
             if status == MIFAREReader.MI_OK:
@@ -113,9 +107,7 @@ while continue_reading:
                 text = text.rstrip('\x00')
                 print "cardinfo = ", text
                 print "\n"
-            except:
-                print("The tag could not be written to.")
->>>>>>> 40a69d2bde9d72942b8ca515b5a18f73d3a83f37
+
             # Stop
             MIFAREReader.MFRC522_StopCrypto1()
 
