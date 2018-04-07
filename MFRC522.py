@@ -361,6 +361,20 @@ class MFRC522:
     i = 0
     if len(backData) == 16:
       print "Sector "+str(blockAddr)+" "+str(backData)
+      
+  def MFRC522_ReadData(self, blockAddr):
+    recvData = []
+    recvData.append(self.PICC_READ)
+    recvData.append(blockAddr)
+    pOut = self.CalulateCRC(recvData)
+    recvData.append(pOut[0])
+    recvData.append(pOut[1])
+    (status, backData, backLen) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE, recvData)
+    if not(status == self.MI_OK):
+      print "Error while reading!"
+    if len(backData) == 16:
+      print "Sector "+str(blockAddr)+" "+str(backData)
+    return backData
   
   def MFRC522_Write(self, blockAddr, writeData):
     buff = []
