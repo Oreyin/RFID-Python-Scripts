@@ -45,7 +45,7 @@ text = raw_input('Enter Part number: ')
 
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
-    print("In the while loop")
+
     # Scan for cards    
     (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
@@ -58,50 +58,51 @@ while continue_reading:
 
     # If we have the UID, continue
     if status == MIFAREReader.MI_OK:
-
-        # Print UID
-        print "Card read UID: %s,%s,%s,%s" % (uid[0], uid[1], uid[2], uid[3])
-    
-        # This is the default key for authentication
-        key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
+        try:
+            # Print UID
+            print "Card read UID: %s,%s,%s,%s" % (uid[0], uid[1], uid[2], uid[3])
         
-        # Select the scanned tag
-        MIFAREReader.MFRC522_SelectTag(uid)
+            # This is the default key for authentication
+            key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
+            
+            # Select the scanned tag
+            MIFAREReader.MFRC522_SelectTag(uid)
 
-        # Authenticate
-        status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
-        print "\n"
-
-        # Check if authenticated
-        if status == MIFAREReader.MI_OK:
-
-            # Variable for the data to write
-            data = []
-
-            # Fill the data with 0xFF
-            for x in range(0,16):
-                data.append(0xDD)
-
-            print "Sector 8 looked like this:"
-            # Read block 8
-            MIFAREReader.MFRC522_Read(8)
+            # Authenticate
+            status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
             print "\n"
 
-            print "Sector 8 will now be filled with text:"
-            # Write the data
-            text = '{:\x00<16}'.format(text)
-            bytestring = map(ord, text)
-            MIFAREReader.MFRC522_Write(8, bytestring)
-            print "\n"
+            # Check if authenticated
+            if status == MIFAREReader.MI_OK:
 
-            print "It now looks like this:"
-            # Check to see if it was written
-            cardinfo = MIFAREReader.MFRC522_ReadData(8)
-            text = ''.join(map(chr, cardinfo))
-            text = text.rstrip('\x00')
-            print "cardinfo = ", text
-            print "\n"
+                # Variable for the data to write
+                data = []
 
+                # Fill the data with 0xFF
+                for x in range(0,16):
+                    data.append(0xDD)
+
+                print "Sector 8 looked like this:"
+                # Read block 8
+                MIFAREReader.MFRC522_Read(8)
+                print "\n"
+
+                print "Sector 8 will now be filled with text:"
+                # Write the data
+                text = '{:\x00<16}'.format(text)
+                bytestring = map(ord, text)
+                MIFAREReader.MFRC522_Write(8, bytestring)
+                print "\n"
+
+                print "It now looks like this:"
+                # Check to see if it was written
+                cardinfo = MIFAREReader.MFRC522_ReadData(8)
+                text = ''.join(map(chr, cardinfo))
+                text = text.rstrip('\x00')
+                print "cardinfo = ", text
+                print "\n"
+            except:
+                print("The tag could not be written to.")
             # Stop
             MIFAREReader.MFRC522_StopCrypto1()
 
