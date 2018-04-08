@@ -34,17 +34,15 @@ def end_read(signal,frame):
     continue_reading = False
     GPIO.cleanup()
 
-
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
 
 # Create an object of the class MFRC522
 MIFAREReader = MFRC522.MFRC522()
 
-text = raw_input('Enter Part number: ')
-
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
+    
     # Scan for cards    
     (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
@@ -79,26 +77,35 @@ while continue_reading:
 
             # Fill the data with 0xFF
             for x in range(0,16):
-                data.append(0xDD)
+                data.append(0xFF)
 
             print "Sector 8 looked like this:"
             # Read block 8
             MIFAREReader.MFRC522_Read(8)
             print "\n"
 
-            print "Sector 8 will now be filled with text:"
+            print "Sector 8 will now be filled with 0xFF:"
             # Write the data
-            text = '{:\x00<16}'.format(text)
-            bytestring = map(ord, text)
-            MIFAREReader.MFRC522_Write(8, bytestring)
+            MIFAREReader.MFRC522_Write(8, data)
             print "\n"
 
             print "It now looks like this:"
             # Check to see if it was written
-            cardinfo = MIFAREReader.MFRC522_ReadData(8)
-            text = ''.join(map(chr, cardinfo))
-            text = text.rstrip('\x00')
-            print "cardinfo = ", text
+            MIFAREReader.MFRC522_Read(8)
+            print "\n"
+
+            data = []
+            # Fill the data with 0x00
+            for x in range(0,16):
+                data.append(0x00)
+
+            print "Now we fill it with 0x00:"
+            MIFAREReader.MFRC522_Write(8, data)
+            print "\n"
+
+            print "It is now empty:"
+            # Check to see if it was written
+            MIFAREReader.MFRC522_Read(8)
             print "\n"
 
             # Stop
